@@ -107,7 +107,7 @@ class Spider:
                 job_keywords = data_parse.get_job_type(source)
                 row['keywords'] = job_keywords
                 query_dict = {
-                    "jobid": row['jobid']
+                    "_id": row['_id']
                 }
                 data_dict = {"$set":row}
                 mongo_api.update_one_data(self.mongo_connection, query_dict, data_dict)
