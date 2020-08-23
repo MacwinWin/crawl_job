@@ -1,0 +1,26 @@
+# @author : microfat
+# @time   : 08/23/20 17:07:04
+# @File   : docker-compose.yml
+
+version: "3"
+services:
+    spider:
+        build: .
+        image: crawl_job
+        container_name: crawl_job_spider
+        restart: always
+        tty: true
+    
+    mongodb:
+        image: mongo:latest
+        container_name: crawl_job_db
+        environment: 
+            - MONGO_INITDB_DATABASE=job
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=root
+        volumes: 
+            - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+            - ./mongo-volume:/data/db
+        ports:
+            - 27017:27017
+        restart: always

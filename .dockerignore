@@ -1,0 +1,7 @@
+.*
+*.sql
+*.md
+*.ipynb
+__pycache__/*
+__log__/*
+.ipynb_checkpoints/*
