@@ -27,7 +27,7 @@ RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
 
 # 安装项目环境 
 RUN rm -Rf /app/__pycache__ \
-    && apt-get install --no-install-recommends -y openjdk-8-jre python3-requests python3-bs4 python3-dateutil \
+    && apt-get install --no-install-recommends -y openjdk-8-jre python3-requests python3-bs4 python3-pymongo \
     && pip3 install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt \
     && apt-get purge -y --auto-remove gcc make \
     && rm -rf /var/lib/apt/lists/* 
