@@ -145,7 +145,7 @@ class ParseData:
         try:
             lng = soup.find('li', {'class':'chaxun_input_li_end'}).find('input')['lng']
             lat = soup.find('li', {'class':'chaxun_input_li_end'}).find('input')['lat']
-            if lng == '0.000000' and lat == '0.000000':
+            if lng.split('.')[0] == '0' and lat.split('.')[0] == '0':
                 lng = ''
                 lat = ''
         except:

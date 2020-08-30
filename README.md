@@ -123,6 +123,7 @@ CONTAINER ID        IMAGE                      COMMAND                  CREATED 
     <img src="connection-sample.png">
 
 ## To-Do
+- Data Clean
 - Data visualization using plotly
 
 <!-- LICENSE -->

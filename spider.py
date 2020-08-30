@@ -78,43 +78,49 @@ class Spider:
         data_parse = parse_data.ParseData()
 
         count = 0
-        for row in self.mongo_connection.find():
-            url = row['job_href']
-            if 'jobs.51job.com' in url:
-                headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.13 Safari/537.36'}
-                try:
-                    source = data_request.send_request(headers, request_url = url)
-                    address = data_parse.get_job_address(source)
-                    location_source = data_request.send_request(headers, request_url = 'https://search.51job.com/jobsearch/bmap/map.php', jobid = row['jobid'])
-                    lng, lat = data_parse.get_job_location(location_source)
-                    row['lng'] = lng
-                    row['lat'] = lat
-                except:
-                    print(url)
-                    continue
-                if address != '':
-                    row['workarea_text'] = address
-                experience, education, need_people, publish_date, english = data_parse.get_job_msg(source)
-                row['experience'] = experience
-                row['education'] = education
-                row['need_people'] = need_people
-                row['publish_date'] = publish_date
-                row['english'] = english
-                detail = data_parse.get_job_detail(source)
-                row['detail'] = detail
-                job_type = data_parse.get_job_type(source)
-                row['type'] = job_type
-                job_keywords = data_parse.get_job_type(source)
-                row['keywords'] = job_keywords
-                query_dict = {
-                    "_id": row['_id']
-                }
-                data_dict = {"$set":row}
-                mongo_api.update_one_data(self.mongo_connection, query_dict, data_dict)
-                count += 1
-                #print('\r', count, end='', flush=True)
-            else:
-                pass
+        cursor = self.mongo_connection.find(no_cursor_timeout=True)
+        try:
+            for row in cursor:
+                url = row['job_href']
+                if 'jobs.51job.com' in url:
+                    headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.13 Safari/537.36'}
+                    try:
+                        source = data_request.send_request(headers, request_url = url)
+                        address = data_parse.get_job_address(source)
+                        location_source = data_request.send_request(headers, request_url = 'https://search.51job.com/jobsearch/bmap/map.php', jobid = row['jobid'])
+                        lng, lat = data_parse.get_job_location(location_source)
+                        row['lng'] = lng
+                        row['lat'] = lat
+                    except:
+                        print(url)
+                        continue
+                    if address != '':
+                        row['workarea_text'] = address
+                    experience, education, need_people, publish_date, english = data_parse.get_job_msg(source)
+                    row['experience'] = experience
+                    row['education'] = education
+                    row['need_people'] = need_people
+                    row['publish_date'] = publish_date
+                    row['english'] = english
+                    detail = data_parse.get_job_detail(source)
+                    row['detail'] = detail
+                    job_type = data_parse.get_job_type(source)
+                    row['type'] = job_type
+                    job_keywords = data_parse.get_job_type(source)
+                    row['keywords'] = job_keywords
+                    query_dict = {
+                        "_id": row['_id']
+                    }
+                    data_dict = {"$set":row}
+                    mongo_api.update_one_data(self.mongo_connection, query_dict, data_dict)
+                    count += 1
+                    #print('\r', count, end='', flush=True)
+                else:
+                    pass
+        except:
+            pass
+        finally:
+            cursor.close()
     
     def run(self):
         if self.keyword == None:
